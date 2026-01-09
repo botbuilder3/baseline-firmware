@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "release_date": "2026-01-09",
+  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.0.0.tar.gz",
+  "checksum_sha256": "",
+  "min_agent_version": "1.0.0",
+  "changelog": "Initial release - base HA configuration with pet-aware sleep detection"
+}
