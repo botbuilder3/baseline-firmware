@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "release_date": "2026-01-09",
   "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.0.0.tar.gz",
-  "checksum_sha256": "",
+  "checksum_sha256": "2d243150cc55aa85f2acb3eb3b8758588114b6fc9cf311e39a21e721a574bec4",
   "min_agent_version": "1.0.0",
-  "changelog": "Initial release - base HA configuration with pet-aware sleep detection"
+  "changelog": "Initial release - pet-aware sleep detection, humidity value logging"
 }
