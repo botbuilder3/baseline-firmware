@@ -2,7 +2,7 @@
 # Baseline Homes - Update Agent
 # Runs nightly to check for and apply firmware updates
 # Location: /opt/baseline/check-update.sh
-# Version: 1.0.1
+# Version: 1.0.2
 
 set -e
 
@@ -10,7 +10,7 @@ set -e
 MANIFEST_URL="https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/manifest.json"
 
 LOCAL_VERSION_FILE="/opt/baseline/current_version"
-CONFIG_DIR="/config"
+CONFIG_DIR="/homeassistant"
 LOG_FILE="/opt/baseline/update.log"
 BACKUP_DIR="/opt/baseline/backups"
 MAX_LOG_LINES=1000
