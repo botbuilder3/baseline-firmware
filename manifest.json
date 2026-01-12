@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
-  "release_date": "2026-01-09",
-  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.0.0.tar.gz",
-  "checksum_sha256": "2d243150cc55aa85f2acb3eb3b8758588114b6fc9cf311e39a21e721a574bec4",
+  "version": "1.6.0",
+  "release_date": "2026-01-11",
+  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.6.0.tar.gz",
+  "checksum_sha256": "2ac26f65d7c9fb2383d5275b3dd546e01de85dab2d0103e978358786470d22aa",
   "min_agent_version": "1.0.0",
-  "changelog": "Initial release - pet-aware sleep detection, humidity value logging"
+  "changelog": "v1.6: Hardcoded webhook URLs, battery status reporting, basement temp alert fix"
 }
