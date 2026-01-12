@@ -1,10 +1,12 @@
 # Baseline Homes - Firmware Update System
 
-**Last Updated:** January 9, 2026
+**Last Updated:** January 11, 2026
 
 ## Overview
 
 The firmware update system allows remote, automatic updates to all deployed Raspberry Pi devices running Home Assistant. Updates are checked nightly and applied automatically without customer intervention.
+
+**Hosting:** Self-hosted at `https://firmware.yourbaselinehome.com/` via Cloudflare tunnel.
 
 ---
 
@@ -12,17 +14,19 @@ The firmware update system allows remote, automatic updates to all deployed Rasp
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    GitHub Repository                         │
-│              botbuilder3/baseline-firmware                   │
+│                  Self-Hosted Server (LXC 101)               │
 │                                                              │
+│  nginx :8084 → /opt/firmware/                               │
 │  ┌─────────────┐  ┌──────────────────────────────────────┐  │
 │  │manifest.json│  │ releases/                            │  │
-│  │             │  │   baseline-1.0.0.tar.gz              │  │
-│  │ - version   │  │   baseline-1.0.1.tar.gz              │  │
-│  │ - checksum  │  │   ...                                │  │
+│  │             │  │   baseline-1.7.0.tar.gz              │  │
+│  │ - version   │  │   ...                                │  │
+│  │ - checksum  │  │                                      │  │
 │  │ - url       │  │                                      │  │
 │  └─────────────┘  └──────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
+                              │
+              Cloudflare Tunnel (firmware.yourbaselinehome.com)
                               │
                               │ HTTPS (nightly at 3 AM)
                               ▼
@@ -38,7 +42,7 @@ The firmware update system allows remote, automatic updates to all deployed Rasp
 │  └─────────────────────────────────────────────────────┘    │
 │                                                              │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │ /config/                                            │    │
+│  │ /homeassistant/                                     │    │
 │  │   configuration.yaml  <- Updated by system          │    │
 │  │   automations.yaml    <- Updated by system          │    │
 │  │   scripts.yaml        <- Updated by system          │    │
@@ -56,17 +60,17 @@ The firmware update system allows remote, automatic updates to all deployed Rasp
 
 The manifest file tells devices what version is available and where to download it.
 
-**Location:** Repository root
+**Location:** `/opt/firmware/manifest.json` on server
 
 **Structure:**
 ```json
 {
-  "version": "1.0.0",
-  "release_date": "2026-01-09",
-  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.0.0.tar.gz",
-  "checksum_sha256": "2d243150cc55aa85f2acb3eb3b8758588114b6fc9cf311e39a21e721a574bec4",
+  "version": "1.7.0",
+  "release_date": "2026-01-11",
+  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.7.0.tar.gz",
+  "checksum_sha256": "13ec3b4ccec89f5992da88ab26ff3b054e66d760deb645105d10ba4db74c3035",
   "min_agent_version": "1.0.0",
-  "changelog": "Initial release - pet-aware sleep detection"
+  "changelog": "v1.7: Dumb pipe - removed all alert logic from HA"
 }
 ```
 
@@ -85,16 +89,16 @@ The manifest file tells devices what version is available and where to download 
 
 Tar.gz archives containing the updated configuration files.
 
-**Location:** `releases/baseline-X.X.X.tar.gz`
+**Location:** `/opt/firmware/releases/baseline-X.X.X.tar.gz` on server
 
 **Contents:**
 ```
-baseline-1.0.0.tar.gz
+baseline-1.7.0.tar.gz
 ├── configuration.yaml
 ├── automations.yaml
 ├── scripts.yaml
 ├── customize.yaml
-└── check-update.sh      <- Optional: updates the agent itself
+└── check-update.sh      <- Updates the agent itself
 ```
 
 **Important:** Never include `secrets.yaml` in releases - it contains customer-specific data.
@@ -106,6 +110,12 @@ baseline-1.0.0.tar.gz
 The script that runs on each Pi to check for and apply updates.
 
 **Location on Pi:** `/opt/baseline/check-update.sh`
+
+**Key Configuration:**
+```bash
+MANIFEST_URL="https://firmware.yourbaselinehome.com/manifest.json"
+CONFIG_DIR="/homeassistant"
+```
 
 **Features:**
 - Nightly version check against manifest
@@ -130,7 +140,7 @@ The script that runs on each Pi to check for and apply updates.
          ▼
 ┌──────────────────┐
 │ Fetch manifest   │
-│ from GitHub      │
+│ from server      │
 └────────┬─────────┘
          ▼
 ┌──────────────────┐     ┌─────────────────┐
@@ -157,6 +167,11 @@ The script that runs on each Pi to check for and apply updates.
 └────────┬─────────┘
          ▼
 ┌──────────────────┐
+│ Update agent     │
+│ (if included)    │
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
 │ Update version   │
 │ file             │
 └────────┬─────────┘
@@ -173,12 +188,12 @@ The script that runs on each Pi to check for and apply updates.
 
 | File | Updated | Notes |
 |------|---------|-------|
-| configuration.yaml | ✅ Yes | Core HA config |
-| automations.yaml | ✅ Yes | Alert logic |
+| configuration.yaml | ✅ Yes | Core HA config, hardcoded webhook URLs |
+| automations.yaml | ✅ Yes | Event logging (dumb pipe) |
 | scripts.yaml | ✅ Yes | Helper scripts |
 | customize.yaml | ✅ Yes | Entity customization |
+| check-update.sh | ✅ Yes | Self-updating agent |
 | secrets.yaml | ❌ NEVER | Customer-specific data |
-| check-update.sh | ✅ Yes | If included in release |
 
 ---
 
@@ -193,7 +208,7 @@ The update agent should be baked into the master Raspberry Pi image so all new d
 SSH into the Pi and run:
 
 ```bash
-curl -s https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/update-agent/install.sh | bash
+curl -s https://firmware.yourbaselinehome.com/update-agent/install.sh | bash
 ```
 
 This will:
@@ -207,56 +222,91 @@ This will:
 
 ## Creating a New Release
 
-### Prerequisites
+### Steps
 
-- Updated config files in `baseline-homes/ha-config/`
-- Access to `baseline-firmware` repository
+1. Update the HA config files in `baseline-home-v3/ha-config/`
 
-### Steps (Windows PowerShell)
+2. Create temp folder and copy files:
 
-```powershell
-# 1. Navigate to firmware repo
-cd C:\baseline-homes\baseline-firmware
-
-# 2. Create temp folder and copy files
-mkdir temp-release -Force
-copy ..\baseline-homes\ha-config\configuration.yaml temp-release\
-copy ..\baseline-homes\ha-config\automations.yaml temp-release\
-copy ..\baseline-homes\ha-config\scripts.yaml temp-release\
-copy ..\baseline-homes\ha-config\customize.yaml temp-release\
-
-# 3. Include updated agent if needed
-copy update-agent\check-update.sh temp-release\
-
-# 4. Create the release package
-tar -czvf releases\baseline-X.X.X.tar.gz -C temp-release .
-
-# 5. Get the checksum
-certutil -hashfile releases\baseline-X.X.X.tar.gz SHA256
-
-# 6. Clean up
-Remove-Item temp-release -Recurse
-
-# 7. Update manifest.json with new version and checksum
-notepad manifest.json
-
-# 8. Commit and push
-git add .
-git commit -m "Release X.X.X: Description of changes"
-git push
+```bash
+mkdir -p temp-release
+cp ../baseline-home-v3/ha-config/configuration.yaml temp-release/
+cp ../baseline-home-v3/ha-config/automations.yaml temp-release/
+cp ../baseline-home-v3/ha-config/scripts.yaml temp-release/
+cp ../baseline-home-v3/ha-config/customize.yaml temp-release/
+cp update-agent/check-update.sh temp-release/
 ```
 
-### Manifest Update Template
+3. Create tarball and get checksum:
 
-```json
-{
-  "version": "X.X.X",
-  "release_date": "YYYY-MM-DD",
-  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-X.X.X.tar.gz",
-  "checksum_sha256": "PASTE_CHECKSUM_HERE",
-  "min_agent_version": "1.0.0",
-  "changelog": "Description of what changed"
+```bash
+cd temp-release && tar -czf ../releases/baseline-X.X.X.tar.gz . && cd ..
+sha256sum releases/baseline-X.X.X.tar.gz
+rm -rf temp-release
+```
+
+4. Update `manifest.json` with new version, URL, and checksum
+
+5. Copy to server:
+
+```bash
+cat releases/baseline-X.X.X.tar.gz | ssh root@192.168.1.104 "pct exec 101 -- tee /opt/firmware/releases/baseline-X.X.X.tar.gz > /dev/null"
+cat manifest.json | ssh root@192.168.1.104 "pct exec 101 -- tee /opt/firmware/manifest.json > /dev/null"
+```
+
+6. Commit and push to GitHub (as backup)
+
+---
+
+## Server Setup
+
+### nginx Configuration
+
+File: `/etc/nginx/sites-available/firmware`
+
+```nginx
+server {
+    listen 8084;
+    server_name _;
+    root /opt/firmware;
+
+    location / {
+        autoindex off;
+        try_files $uri =404;
+    }
+
+    location = /manifest.json {
+        add_header Cache-Control "no-cache";
+    }
+
+    location /releases/ {
+        add_header Cache-Control "public, max-age=86400";
+    }
 }
+```
+
+### Cloudflare Tunnel
+
+In `/etc/cloudflared/config.yml`:
+
+```yaml
+ingress:
+  - hostname: firmware.yourbaselinehome.com
+    service: http://localhost:8084
+```
+
+### Directory Structure
+
+```
+/opt/firmware/
+├── manifest.json
+├── releases/
+│   ├── baseline-1.0.0.tar.gz
+│   ├── baseline-1.6.0.tar.gz
+│   └── baseline-1.7.0.tar.gz
+└── update-agent/
+    ├── check-update.sh
+    └── install.sh
 ```
 
 ---
@@ -269,12 +319,6 @@ SSH into the Pi:
 
 ```bash
 cat /opt/baseline/update.log
-```
-
-Or tail for live updates:
-
-```bash
-tail -f /opt/baseline/update.log
 ```
 
 ### Check Current Version
@@ -293,7 +337,7 @@ cat /opt/baseline/current_version
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| "Failed to fetch manifest" | No internet / GitHub down | Check network, retry later |
+| "Failed to fetch manifest" | No internet / server down | Check network, verify server is up |
 | "Checksum mismatch" | Corrupted download | Will auto-retry next night |
 | "ha core restart failed" | HA supervisor issue | Manual restart via UI |
 | Updates not applying | Cron not running | Check `/etc/cron.d/baseline-update` |
@@ -307,31 +351,9 @@ ls -la /opt/baseline/backups/
 ### Manual Rollback
 
 ```bash
-cd /config
+cd /homeassistant
 tar -xzf /opt/baseline/backups/backup-X.X.X-YYYYMMDD-HHMMSS.tar.gz
 ha core restart
-```
-
----
-
-## Changing the Update Source
-
-To migrate devices to a new repository or URL:
-
-1. Edit `check-update.sh` - change `MANIFEST_URL` at the top
-2. Include the updated `check-update.sh` in your next release
-3. Push to the CURRENT repository
-4. Devices will download from old repo, get new script
-5. Next update check will use the new URL
-
-**Example migration:**
-
-```bash
-# In check-update.sh, change:
-MANIFEST_URL="https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/manifest.json"
-
-# To:
-MANIFEST_URL="https://your-new-server.com/firmware/manifest.json"
 ```
 
 ---
@@ -340,9 +362,9 @@ MANIFEST_URL="https://your-new-server.com/firmware/manifest.json"
 
 | Risk | Mitigation |
 |------|------------|
-| Man-in-the-middle | HTTPS for all downloads |
+| Man-in-the-middle | HTTPS via Cloudflare |
 | Tampered firmware | SHA256 checksum verification |
-| Unauthorized access | Private GitHub repo |
+| DDoS attacks | Cloudflare protection |
 | Failed updates | Automatic backups, keeps previous 5 |
 | Bricked devices | HA restarts gracefully, manual recovery possible |
 
@@ -353,22 +375,20 @@ MANIFEST_URL="https://your-new-server.com/firmware/manifest.json"
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2026-01-09 | Initial release - pet-aware sleep detection, humidity logging |
-| 1.0.1 | 2026-01-09 | Agent self-update capability, log rotation, better error handling |
+| 1.6.0 | 2026-01-11 | Hardcoded webhook URLs (fixes bad installs), battery reporting |
+| 1.7.0 | 2026-01-11 | Dumb pipe architecture - all alert logic moved to n8n Rule Engine |
 
 ---
 
 ## File Locations Summary
 
-### On GitHub (baseline-firmware repo)
+### On Server (LXC 101)
 
 ```
-baseline-firmware/
+/opt/firmware/
 ├── manifest.json                 # Version info - devices check this
-├── README.md                     # Repo readme
 ├── releases/
 │   └── baseline-X.X.X.tar.gz    # Release packages
-├── scripts/
-│   └── create-release.sh        # Release helper (Linux/Mac)
 └── update-agent/
     ├── check-update.sh          # The update script
     └── install.sh               # Bootstrap installer
@@ -379,13 +399,12 @@ baseline-firmware/
 ```
 /opt/baseline/
 ├── check-update.sh              # Update agent
-├── current_version              # Installed version (e.g., "1.0.0")
+├── current_version              # Installed version (e.g., "1.7.0")
 ├── update.log                   # Activity log
-├── install.sh                   # Installer (if updated)
 └── backups/
     └── backup-X.X.X-*.tar.gz   # Config backups (last 5)
 
-/config/
+/homeassistant/
 ├── configuration.yaml           # HA config (updated by system)
 ├── automations.yaml             # Automations (updated by system)
 ├── scripts.yaml                 # Scripts (updated by system)
@@ -404,4 +423,6 @@ baseline-firmware/
 
 **Manual check:** `/opt/baseline/check-update.sh`
 
-**Repository:** https://github.com/botbuilder3/baseline-firmware
+**Server files:** `/opt/firmware/` on LXC 101
+
+**Public URL:** https://firmware.yourbaselinehome.com/
