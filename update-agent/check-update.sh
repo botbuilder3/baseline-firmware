@@ -127,6 +127,13 @@ if [ -f "/tmp/baseline-update/install.sh" ]; then
     log "Updated: install.sh"
 fi
 
+# Update signature script if included (for webhook auth)
+if [ -f "/tmp/baseline-update/compute-signature.sh" ]; then
+    cp "/tmp/baseline-update/compute-signature.sh" /opt/baseline/compute-signature.sh
+    chmod +x /opt/baseline/compute-signature.sh
+    log "Updated: compute-signature.sh"
+fi
+
 # Update version file
 echo "$REMOTE_VERSION" > "$LOCAL_VERSION_FILE"
 
