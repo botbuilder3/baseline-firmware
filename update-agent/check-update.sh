@@ -7,7 +7,7 @@
 set -e
 
 # Configuration - THIS URL CAN BE CHANGED IN FUTURE RELEASES
-MANIFEST_URL="https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/manifest.json"
+MANIFEST_URL="https://firmware.yourbaselinehome.com/manifest.json"
 
 LOCAL_VERSION_FILE="/opt/baseline/current_version"
 CONFIG_DIR="/homeassistant"
