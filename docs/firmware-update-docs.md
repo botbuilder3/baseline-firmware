@@ -377,6 +377,8 @@ ha core restart
 | 1.0.0 | 2026-01-09 | Initial release - pet-aware sleep detection, humidity logging |
 | 1.6.0 | 2026-01-11 | Hardcoded webhook URLs (fixes bad installs), battery reporting |
 | 1.7.0 | 2026-01-11 | Dumb pipe architecture - all alert logic moved to n8n Rule Engine |
+| 1.8.0 | 2026-01-12 | Status snapshots every 15 min for real-time sensor display in Family Portal |
+| 1.9.0 | 2026-01-12 | Family-triggered firmware updates, firmware version reporting in heartbeat |
 
 ---
 
