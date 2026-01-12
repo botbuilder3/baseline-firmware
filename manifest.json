@@ -1,8 +1,8 @@
 {
-  "version": "1.8.0",
+  "version": "1.10.0",
   "release_date": "2026-01-12",
-  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.8.0.tar.gz",
-  "checksum_sha256": "ecb3fdcc61222b55622aca06c0452faa5bfbfccaeb05afc89b0510471c065a46",
+  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.10.0.tar.gz",
+  "checksum_sha256": "47d3d01d04d8639146be459d05f196c385843f073ed56e4fc7307496f3fc3f1b",
   "min_agent_version": "1.0.0",
-  "changelog": "v1.8: Add status snapshots every 15 min for real-time sensor display in Family Portal"
+  "changelog": "v1.10: Change heartbeat from daily to hourly for better dashboard accuracy"
 }
