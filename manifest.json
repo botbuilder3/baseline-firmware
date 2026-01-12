@@ -1,8 +1,8 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "release_date": "2026-01-11",
-  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.6.0.tar.gz",
-  "checksum_sha256": "2ac26f65d7c9fb2383d5275b3dd546e01de85dab2d0103e978358786470d22aa",
+  "firmware_url": "https://raw.githubusercontent.com/botbuilder3/baseline-firmware/main/releases/baseline-1.7.0.tar.gz",
+  "checksum_sha256": "329c1a4816d3bb0ed65b349bf9ffebe00200c8ea006fa84ed3095ed3317ea7b1",
   "min_agent_version": "1.0.0",
-  "changelog": "v1.6: Hardcoded webhook URLs, battery status reporting, basement temp alert fix"
+  "changelog": "v1.7: Dumb pipe - removed all alert logic from HA, n8n Rule Engine handles everything"
 }
