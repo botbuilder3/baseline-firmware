@@ -1,8 +1,8 @@
 {
-  "version": "1.10.0",
-  "release_date": "2026-01-12",
-  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.10.0.tar.gz",
-  "checksum_sha256": "47d3d01d04d8639146be459d05f196c385843f073ed56e4fc7307496f3fc3f1b",
+  "version": "1.11.0",
+  "release_date": "2026-01-13",
+  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.11.0.tar.gz",
+  "checksum_sha256": "35414a73dc68b7c8790f49c0a982f5fddd018f5af1977086bc554f8b79adea43",
   "min_agent_version": "1.0.0",
-  "changelog": "v1.10: Change heartbeat from daily to hourly for better dashboard accuracy"
+  "changelog": "v1.11: Smart plug power monitoring - 15-min polling instead of real-time events"
 }
