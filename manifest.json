@@ -1,8 +1,8 @@
 {
-  "version": "1.11.0",
-  "release_date": "2026-01-22",
-  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.11.0.tar.gz",
-  "checksum_sha256": "1329aa193f9a71aac3d3910963c470ffd1df01d991be1d8bdb936265d498c543",
+  "version": "1.17.0",
+  "release_date": "2026-01-24",
+  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.17.0.tar.gz",
+  "checksum_sha256": "b31b198d470fc215087ab772d90fc65870d0bb0254bcd8d1688095bfb1d14794",
   "min_agent_version": "1.0.0",
-  "changelog": "v1.11: Simplified webhook authentication"
+  "changelog": "v1.17: Clean build with Unix line endings"
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Baseline Homes - Update Agent
 # Runs nightly to check for and apply firmware updates
-# Location: /opt/baseline/check-update.sh
+# Location: /config/baseline/check-update.sh
 # Version: 1.0.2
 
 set -e
@@ -9,14 +9,14 @@ set -e
 # Configuration - THIS URL CAN BE CHANGED IN FUTURE RELEASES
 MANIFEST_URL="https://firmware.yourbaselinehome.com/manifest.json"
 
-LOCAL_VERSION_FILE="/opt/baseline/current_version"
-CONFIG_DIR="/homeassistant"
-LOG_FILE="/opt/baseline/update.log"
-BACKUP_DIR="/opt/baseline/backups"
+LOCAL_VERSION_FILE="/config/baseline/current_version"
+CONFIG_DIR="/config"
+LOG_FILE="/config/baseline/update.log"
+BACKUP_DIR="/config/baseline/backups"
 MAX_LOG_LINES=1000
 
 # Ensure directories exist
-mkdir -p /opt/baseline
+mkdir -p /config/baseline
 mkdir -p "$BACKUP_DIR"
 
 log() {
@@ -115,23 +115,16 @@ done
 # Update the agent itself if included in release
 # THIS ALLOWS CHANGING THE MANIFEST_URL IN FUTURE RELEASES
 if [ -f "/tmp/baseline-update/check-update.sh" ]; then
-    cp "/tmp/baseline-update/check-update.sh" /opt/baseline/check-update.sh
-    chmod +x /opt/baseline/check-update.sh
+    cp "/tmp/baseline-update/check-update.sh" /config/baseline/check-update.sh
+    chmod +x /config/baseline/check-update.sh
     log "Updated: check-update.sh (agent updated)"
 fi
 
 # Update install script if included
 if [ -f "/tmp/baseline-update/install.sh" ]; then
-    cp "/tmp/baseline-update/install.sh" /opt/baseline/install.sh
-    chmod +x /opt/baseline/install.sh
+    cp "/tmp/baseline-update/install.sh" /config/baseline/install.sh
+    chmod +x /config/baseline/install.sh
     log "Updated: install.sh"
-fi
-
-# Update signature script if included (for webhook auth)
-if [ -f "/tmp/baseline-update/compute-signature.sh" ]; then
-    cp "/tmp/baseline-update/compute-signature.sh" /opt/baseline/compute-signature.sh
-    chmod +x /opt/baseline/compute-signature.sh
-    log "Updated: compute-signature.sh"
 fi
 
 # Update version file
