@@ -1,8 +1,8 @@
 {
-  "version": "1.17.0",
-  "release_date": "2026-01-24",
-  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-1.17.0.tar.gz",
-  "checksum_sha256": "b31b198d470fc215087ab772d90fc65870d0bb0254bcd8d1688095bfb1d14794",
+  "version": "2.0.1",
+  "release_date": "2026-01-25",
+  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-2.0.1.tar.gz",
+  "checksum_sha256": "cc9bfb8292decf5032e6ba3b905685c790aec19e74fa30da8acbb91bf2eaa229",
   "min_agent_version": "1.0.0",
-  "changelog": "v1.17: Clean build with Unix line endings"
+  "changelog": "v2.0.1: Real-time power on/off detection via old|new format"
 }
