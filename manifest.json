@@ -1,8 +1,8 @@
 {
-  "version": "2.0.1",
+  "version": "2.0.2",
   "release_date": "2026-01-25",
-  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-2.0.1.tar.gz",
-  "checksum_sha256": "cc9bfb8292decf5032e6ba3b905685c790aec19e74fa30da8acbb91bf2eaa229",
+  "firmware_url": "https://firmware.yourbaselinehome.com/releases/baseline-2.0.2.tar.gz",
+  "checksum_sha256": "cc1ccf477c360f6f3b6e95888b99ba73573c4eea9cbef26ace0793802293d718",
   "min_agent_version": "1.0.0",
-  "changelog": "v2.0.1: Real-time power on/off detection via old|new format"
+  "changelog": "v2.0.2: Remove legacy morning activity tracking (handled by Rule Engine)"
 }
